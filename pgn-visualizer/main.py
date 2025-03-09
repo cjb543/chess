@@ -15,38 +15,21 @@ class ChessBoard(QWidget):
         super().__init__(parent)
         self.square_size = 40
         self.board_size = self.square_size * 8
-        self.setMinimumSize(200, 200)
-        
-    def resizeEvent(self, event):
-        # Calculate the new board size based on available space
-        available_space = min(self.width(), self.height())
-        self.board_size = available_space - 20  # Leave some margin
-        self.square_size = self.board_size // 8
-
-        # Recalculate board size to ensure perfect squares
-        self.board_size = self.square_size * 8
-        super().resizeEvent(event)
+        self.setMinimumSize(400, 400)
 
     def paintEvent(self, event):
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-        
-        # Calculate the centered position for the board
         start_x = (self.width() - self.board_size) // 2
         start_y = (self.height() - self.board_size) // 2
-        
-        # Draw the chess board
         for row in range(8):
             for col in range(8):
                 x = start_x + col * self.square_size
                 y = start_y + row * self.square_size
-                
-                # Set square color (alternate between light and dark)
                 if (row + col) % 2 == 0:
-                    color = QColor(240, 217, 181)  # Light square
+                    color = QColor(240, 217, 181)
                 else:
-                    color = QColor(181, 136, 99)   # Dark square
-                
+                    color = QColor(181, 136, 99)
                 painter.fillRect(x, y, self.square_size, self.square_size, color)
 
 class MainWindow(QMainWindow):
@@ -55,81 +38,69 @@ class MainWindow(QMainWindow):
         self.initUI()
         
     def initUI(self):
-        # Set window properties
-        self.setWindowTitle("Chess Board")
-        self.setMinimumSize(400, 400)
-        
-        # Create a central widget to hold our layout
+        self.setWindowTitle("PGN Visualizer")
+        self.setFixedSize(640, 480)
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
-        
-        # Create main vertical layout
         main_layout = QVBoxLayout(central_widget)
-        
-        # Add components to layout
         self.setupTitleSection(main_layout)
         self.setupBoardAndUploadSection(main_layout)
         self.setupNavigationButtons(main_layout)
-        
-        # Add some margin at the bottom
-        main_layout.addSpacing(10)
 
     def setupTitleSection(self, parent_layout):
-        title_label = QLabel("{PLAYER 1 vs. PLAYER 2}")
-        title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        
-        # Styling
-        font = QFont("Arial", 16, QFont.Weight.Bold)
+        player_1, player_2 = "hello", "world"
+        title_text = f"{player_1} vs. {player_2}"
+        title_label = QLabel(title_text)
+        font = QFont("Consolas", 12, QFont.Weight.Bold)
         title_label.setFont(font)
-        title_label.setMargin(10)
-        
-        # Add to main layout
+        title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         parent_layout.addWidget(title_label)
 
     def setupBoardAndUploadSection(self, parent_layout):
-        # Create horizontal layout
+        # Create the main horizontal layout with reduced spacing
         board_upload_layout = QHBoxLayout()
+        board_upload_layout.setSpacing(1)  # Reduce default spacing between widgets
+        board_upload_layout.setContentsMargins(0, 0, 0, 0)  # Reduce margins
         parent_layout.addLayout(board_upload_layout)
-        
-        # Create and add the chess board
+
+        # Add chess board
         self.chess_board = ChessBoard()
-        board_upload_layout.addWidget(self.chess_board, 4)
-        
-        # Create upload button
+        board_upload_layout.addWidget(self.chess_board, 1)
+
+        # Create a small container for the button with reduced margins
+        button_container = QWidget()
+        button_layout = QVBoxLayout(button_container)
+        button_layout.setContentsMargins(0, 0, 0, 0)  # No margins
+
+        # Create the upload button with reduced size
         upload_button = QPushButton("Upload")
-        upload_button.setMinimumHeight(80)
+        upload_button.setMinimumHeight(40)
+        upload_button.setMaximumWidth(80)  # Limit the width
         upload_button.setCheckable(True)
         upload_button.clicked.connect(self.showUploadDialog)
-        board_upload_layout.addWidget(upload_button, 1)
+
+        # Add button to its container with alignment
+        button_layout.addWidget(upload_button, 0, Qt.AlignmentFlag.AlignCenter)
+
+        # Add the button container to the main layout
+        board_upload_layout.addWidget(button_container, 1)
 
     def setupNavigationButtons(self, parent_layout):
-        # Create horizontal layout for arrow buttons
         arrow_layout = QHBoxLayout()
         parent_layout.addLayout(arrow_layout)
-        
-        # Add spacer to center the arrow buttons
         arrow_layout.addStretch(1)
-        
-        # Create left arrow button
         left_button = QPushButton("←")
         left_button.setMinimumSize(80, 30)
         left_button.clicked.connect(self.navigateLeft)
         arrow_layout.addWidget(left_button)
-        
-        # Add spacing between buttons
         arrow_layout.addSpacing(20)
-        
-        # Create right arrow button
         right_button = QPushButton("→")
         right_button.setMinimumSize(80, 30)
         right_button.clicked.connect(self.navigateRight)
         arrow_layout.addWidget(right_button)
-        
-        # Add spacer to center the arrow buttons
         arrow_layout.addStretch(1)
 
     def showUploadDialog(self):
-        # Open Downloads dir
         documents_dir = str(Path.home() / "Documents")
         fname = QFileDialog.getOpenFileName(self, 'Open file', documents_dir)
         if fname[0]:
