@@ -24,7 +24,6 @@ class MainWindow(QMainWindow):
         ui_layout = UILayout()
         self.setCentralWidget(ui_layout)
 
-        
 
 # Execute program
 app = QApplication(sys.argv)

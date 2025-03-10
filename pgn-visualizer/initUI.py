@@ -1,5 +1,6 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton
 from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QShortcut, QKeySequence, QKeyEvent
 
 # board.py
 from board import ChessBoard
@@ -29,6 +30,13 @@ class UILayout(QWidget):
         previous_move_button.isCheckable = True
         previous_move_button.clicked.connect(processing.previousMove)
 
+        # Initialize Hotkeys
+        self.nextMoveShortcut = QShortcut(QKeySequence('Right'), self)
+        self.nextMoveShortcut.activated.connect(processing.nextMove)
+        
+        self.prevMoveShortcut = QShortcut(QKeySequence('Left'), self)
+        self.prevMoveShortcut.activated.connect(processing.previousMove)
+
         # General Layout Properties
         complete_layout = QVBoxLayout()
         complete_layout.setSpacing(8)
@@ -45,4 +53,6 @@ class UILayout(QWidget):
 
         # Set entire layout as a widget and center
         self.setLayout(complete_layout)
+
+    
 
