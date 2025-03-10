@@ -1,6 +1,7 @@
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QFileDialog
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QShortcut, QKeySequence, QKeyEvent
+from pathlib import Path
 
 # board.py
 from board import ChessBoard
@@ -20,7 +21,7 @@ class UILayout(QWidget):
         upload_button = QPushButton("Import PGN")
         upload_button.setFixedSize(128,40)
         upload_button.isCheckable = True
-        upload_button.clicked.connect(processing.uploadFile)
+        upload_button.clicked.connect(self.uploadFile)
         
         # Initialize Turn Arrows
         next_move_button = QPushButton("->")
@@ -54,5 +55,23 @@ class UILayout(QWidget):
         # Set entire layout as a widget and center
         self.setLayout(complete_layout)
 
+    # Move the uploadFile method into the UILayout class
+    def uploadFile(self):
+        documents_dir = str(Path.home() / "Documents")
+        fname = QFileDialog.getOpenFileName(
+            self, 
+            'Open PGN File', 
+            documents_dir, 
+            'PGN Files (*.pgn);;Text Files (*.txt);;All Files (*)'
+        )
+        if fname[0]:
+            self.loadFile(fname[0])
+
+    def loadFile(self, filepath):
+        try:
+            with open(filepath, 'r') as file:
+                processing.processPGN(file)
+        except Exception as e:
+            print(f"Error loading file: {e}")
     
 

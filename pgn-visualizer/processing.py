@@ -11,7 +11,12 @@ from PyQt6.QtWidgets import (QApplication, QFileDialog, QVBoxLayout,
 # When user clicks "Import PGN" and attempts to upload a PGN file
 def uploadFile(self):
     documents_dir = str(Path.home() / "Documents")
-    fname = QFileDialog.getOpenFileName(self, 'Open file', documents_dir)
+    fname = QFileDialog.getOpenFileName(
+        self, 
+        'Open PGN File', 
+        documents_dir, 
+        'Text Files (*.txt);;All Files (*)'
+    )
     if fname[0]:
         self.loadFile(fname[0])
     # TODO: Error check for proper PGN Notation, file extension etc...
@@ -20,10 +25,13 @@ def uploadFile(self):
 def loadFile(self, filepath):
     try:
         with open(filepath, 'r') as file:
-            # Process
-            pass
+            processPGN(file)
     except Exception as e:
         print(f"Error loading file: {e}")
+
+def processPGN(file):
+    # Implement PGN processing here
+    pass
 
 # Show next board position
 def nextMove():
