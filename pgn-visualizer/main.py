@@ -1,7 +1,9 @@
 from PyQt6.QtCore import QSize, Qt
-from PyQt6.QtWidgets import QApplication, QVBoxLayout, QHBoxLayout, QWidget, QPushButton, QMainWindow
+from PyQt6.QtWidgets import QApplication, QFileDialog, QVBoxLayout, QHBoxLayout, QWidget, QPushButton, QMainWindow
 import sys
 from board import ChessBoard
+from pathlib import Path
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -15,11 +17,11 @@ class MainWindow(QMainWindow):
 
         # Initialize Chess Board
         self.board_widget = ChessBoard()
-        self.board_widget.setFixedSize(QSize(640, 360))
+        self.board_widget.setFixedSize(self.board_widget.board_size, self.board_widget.board_size)
 
         # Initialize Upload Button
-        upload_button = QPushButton("Upload")
-        upload_button.setFixedHeight(40)
+        upload_button = QPushButton("Import PGN")
+        upload_button.setFixedSize(128,40)
         upload_button.isCheckable = True
         upload_button.clicked.connect(self.uploadFile)
         
@@ -38,7 +40,7 @@ class MainWindow(QMainWindow):
         complete_layout.setSpacing(8)
 
         # Add Chess Board to Layout
-        complete_layout.addWidget(self.board_widget)
+        complete_layout.addWidget(self.board_widget, 0, Qt.AlignmentFlag.AlignCenter)
         complete_layout.addWidget(upload_button, 0, Qt.AlignmentFlag.AlignCenter)
 
         # Add Arrow Buttons to Layout
@@ -61,7 +63,18 @@ class MainWindow(QMainWindow):
         print("Previous Move Clicked!")
 
     def uploadFile(self):
-        print("Upload Button Clicked!")
+        documents_dir = str(Path.home() / "Documents")
+        fname = QFileDialog.getOpenFileName(self, 'Open file', documents_dir)
+        if fname[0]:
+            self.loadFile(fname[0])
+
+    def loadFile(self, filepath):
+        try:
+            with open(filepath, 'r') as file:
+                # Process
+                pass
+        except Exception as e:
+            print(f"Error loading file: {e}")
 
 # Execute program
 app = QApplication(sys.argv)
