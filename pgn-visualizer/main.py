@@ -1,8 +1,14 @@
-from PyQt6.QtCore import QSize, Qt
-from PyQt6.QtWidgets import QApplication, QFileDialog, QVBoxLayout, QHBoxLayout, QWidget, QPushButton, QMainWindow
 import sys
-from board import ChessBoard
+
 from pathlib import Path
+
+from PyQt6.QtCore import QSize, Qt
+
+from PyQt6.QtWidgets import (QApplication, QFileDialog, QVBoxLayout,
+                             QHBoxLayout, QWidget, QPushButton,
+                             QMainWindow)
+
+from board import ChessBoard
 
 
 class MainWindow(QMainWindow):
@@ -25,12 +31,10 @@ class MainWindow(QMainWindow):
         upload_button.isCheckable = True
         upload_button.clicked.connect(self.uploadFile)
         
-        # Initialize Next Move Arrow
+        # Initialize Turn Arrows
         next_move_button = QPushButton("->")
         next_move_button.isCheckable = True
         next_move_button.clicked.connect(self.nextMove)
-
-        # Initialize Previous Move Arrow
         previous_move_button = QPushButton("<-")
         previous_move_button.isCheckable = True
         previous_move_button.clicked.connect(self.previousMove)
@@ -39,7 +43,7 @@ class MainWindow(QMainWindow):
         complete_layout = QVBoxLayout()
         complete_layout.setSpacing(8)
 
-        # Add Chess Board to Layout
+        # Add Chess Board and Upload Button to Layout
         complete_layout.addWidget(self.board_widget, 0, Qt.AlignmentFlag.AlignCenter)
         complete_layout.addWidget(upload_button, 0, Qt.AlignmentFlag.AlignCenter)
 
@@ -54,20 +58,22 @@ class MainWindow(QMainWindow):
         widget.setLayout(complete_layout)
         self.setCentralWidget(widget)
 
-    # Function to determine next board position
+    # Show next board position
     def nextMove(self):
         print("Next Move Clicked!")
 
-    # Function to determine previous board position
+    # Show previous board position
     def previousMove(self):
         print("Previous Move Clicked!")
 
+    # Open file dialog after clicking "Import PGN"
     def uploadFile(self):
         documents_dir = str(Path.home() / "Documents")
         fname = QFileDialog.getOpenFileName(self, 'Open file', documents_dir)
         if fname[0]:
             self.loadFile(fname[0])
 
+    # Error checking and processing of uploaded PGN file
     def loadFile(self, filepath):
         try:
             with open(filepath, 'r') as file:
