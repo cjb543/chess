@@ -7,14 +7,7 @@ class ChessBoard(QWidget):
         super().__init__(parent)
         self.square_size = 40
         self.board_size = self.square_size * 8
-        self.setMinimumSize(256,256)
-    
-    def resizeEvent(self, event):
-        available_space = min(self.width(),self.height())
-        self.board_size = available_space - 20
-        self.square_size = self.board_size // 8
-        self.board_size = self.square_size * 8
-        super().resizeEvent(event)
+        self.setMinimumSize(200,200)
 
     def paintEvent(self, event):
         painter = QPainter(self)
