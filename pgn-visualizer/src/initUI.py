@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QMessageBox, QPushButton, QFileDialog
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QShortcut, QKeySequence, QKeyEvent
+from PyQt6.QtGui import QShortcut, QKeySequence
 from pathlib import Path
 import re
 from board import ChessBoard

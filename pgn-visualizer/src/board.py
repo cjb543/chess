@@ -2,8 +2,6 @@ from PyQt6.QtWidgets import QWidget
 from PyQt6.QtGui import QPainter, QColor, QPixmap
 from PyQt6.QtCore import Qt
 import re
-import os
-import sys
 
 class ChessBoard(QWidget):
     def __init__(self, parent=None):
@@ -61,7 +59,7 @@ class ChessBoard(QWidget):
     def loadPieceImages(self):
         import os
         import sys
-        
+
         def get_base_path():
             """Get base path for resources"""
             if getattr(sys, 'frozen', False):
@@ -70,14 +68,14 @@ class ChessBoard(QWidget):
             else:
                 # If the application is run in development
                 return os.path.dirname(os.path.abspath(__file__))
-        
+
         piece_types = [
             "wP", "wR", "wN", "wB", "wQ", "wK",
             "bP", "bR", "bN", "bB", "bQ", "bK"
         ]
-        
+
         base_path = get_base_path()
-        
+
         for piece_type in piece_types:
             # Try multiple possible locations
             possible_paths = [
@@ -86,10 +84,10 @@ class ChessBoard(QWidget):
                 f"assets/{piece_type}.png",  # Relative path (original)
                 f"{piece_type}.png"  # Just filename
             ]
-            
+
             pixmap = None
             loaded_path = None
-            
+
             # Try each path until one works
             for path in possible_paths:
                 print(f"Trying to load piece from: {path}")
@@ -109,7 +107,7 @@ class ChessBoard(QWidget):
                 )
             else:
                 print(f"FAILED to load {piece_type} from any location")
-                
+
             self.piece_images[piece_type] = pixmap
 
     def getCurrentPosition(self):
