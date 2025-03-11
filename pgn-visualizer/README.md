@@ -9,8 +9,8 @@ Built with PyQt6 and {INSERT BUILD APP}.
 
 Piece assets used from https://chess.com
 
+## Installation
 Download and build the source code here{hotlink}. Or for those that go outside, the installer{hotlink}.
-
 <br/>
 <br/>
 <br/>
