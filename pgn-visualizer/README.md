@@ -7,6 +7,8 @@ Uses regex and multi-step error-checking to ensure correct file format.
 
 Built with PyQt6 and {INSERT BUILD APP}.
 
+Piece assets used from https://chess.com
+
 Download and build the source code here{hotlink}. Or for those that go outside, the installer{hotlink}.
 
 <br/>
