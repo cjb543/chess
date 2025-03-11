@@ -9,7 +9,7 @@ Built with PyQt6 and PyInstaller.
 Piece assets used from https://chess.com
 
 ## Installation
-Download and build the source code here{hotlink}. Or for those that go outside, the executable{hotlink}.
+Download and build the source code here{hotlink}. Or for those that go outside, the [executable](https://github.com/cjb543/chess/releases/download/pgn-1.0/PGN.Visualizer.exe).
 <br/>
 <br/>
 <br/>
