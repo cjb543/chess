@@ -1,7 +1,8 @@
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QFileDialog
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QMessageBox, QPushButton, QFileDialog
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QShortcut, QKeySequence, QKeyEvent
 from pathlib import Path
+import re
 
 # board.py
 from board import ChessBoard
@@ -55,23 +56,53 @@ class UILayout(QWidget):
         # Set entire layout as a widget and center
         self.setLayout(complete_layout)
 
-    # Move the uploadFile method into the UILayout class
+    # When user clicks "Import PGN" and attempts to upload a PGN file
     def uploadFile(self):
         documents_dir = str(Path.home() / "Documents")
         fname = QFileDialog.getOpenFileName(
             self, 
             'Open PGN File', 
             documents_dir, 
-            'PGN Files (*.pgn);;Text Files (*.txt);;All Files (*)'
+            'Text Files (*.txt);;All Files (*)'
         )
         if fname[0]:
             self.loadFile(fname[0])
 
+    # Error checking and processing of uploaded PGN file
     def loadFile(self, filepath):
         try:
+            # Check validity of file extension (.txt/.pgn), erroring if incorrect
+            file_extension = Path(filepath).suffix.lower()
+            if file_extension not in ['.pgn', '.txt']:
+                QMessageBox.warning(self, "Invalid File", "Please select a .pgn or .txt file")
+                return
+            
+            # Read file into variable
             with open(filepath, 'r') as file:
-                processing.processPGN(file)
-        except Exception as e:
-            print(f"Error loading file: {e}")
-    
+                pgn_content = file.read()
 
+            # If the PGN file is correctly formatted, process it for rendering
+            if self.isValidPGN(pgn_content):
+                processing.processPGN(pgn_content)
+            
+            # Error if .pgn or .txt has invalid PGN formatting
+            else:
+                QMessageBox.warning(self, "Invalid PGN", "The file does not contain valid PGN notation")
+
+        except Exception as e:
+            QMessageBox.critical(self, "Error", f"Error loading file: {e}")
+    
+    def isValidPGN(self, content):
+        # Check if file has all valid tags
+        required_tags = ['Event', 'Site', 'Date', 'Round', 'White', 'Black', 'Result']
+        for tag in required_tags:
+            if f"[{tag} " not in content:
+                return False
+
+        # Use regex to check for valid moves (doesn't check legality of said moves.)
+        # Moves are assumed to be legal
+        if not re.search(r'\]\s*\n\s*\n', content):
+            return False
+        
+        # If all is well, return true
+        return True
