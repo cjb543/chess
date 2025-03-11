@@ -5,12 +5,11 @@ User can navigate through each turn using the onscreen arrow keys, or by using t
 
 Uses regex and multi-step error-checking to ensure correct file format. 
 
-Built with PyQt6 and {INSERT BUILD APP}.
-
+Built with PyQt6 and PyInstaller.
 Piece assets used from https://chess.com
 
 ## Installation
-Download and build the source code here{hotlink}. Or for those that go outside, the installer{hotlink}.
+Download and build the source code here{hotlink}. Or for those that go outside, the executable{hotlink}.
 <br/>
 <br/>
 <br/>
