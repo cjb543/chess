@@ -14,30 +14,43 @@ class UILayout(QWidget):
         self.board_widget = ChessBoard()
         self.board_widget.setFixedSize(self.board_widget.board_size, self.board_widget.board_size)
         processing.set_board(self.board_widget)
+
+        # Initialize Upload Button
         upload_button = QPushButton("Import PGN")
         upload_button.setFixedSize(128,40)
         upload_button.isCheckable = True
         upload_button.clicked.connect(self.uploadFile)
+
+        # Initialize Next Move Button
         next_move_button = QPushButton("->")
         next_move_button.isCheckable = True
         next_move_button.clicked.connect(processing.nextMove)
+        self.nextMoveShortcut = QShortcut(QKeySequence('Right'), self)
+        self.nextMoveShortcut.activated.connect(processing.nextMove)
+
+        # Initialize Previous Move Button
         previous_move_button = QPushButton("<-")
         previous_move_button.isCheckable = True
         previous_move_button.clicked.connect(processing.previousMove)
-        self.nextMoveShortcut = QShortcut(QKeySequence('Right'), self)
-        self.nextMoveShortcut.activated.connect(processing.nextMove)
         self.prevMoveShortcut = QShortcut(QKeySequence('Left'), self)
         self.prevMoveShortcut.activated.connect(processing.previousMove)
+
+        # Initialize board and upload button layout
         complete_layout = QVBoxLayout()
         complete_layout.setSpacing(8)
         complete_layout.addWidget(self.board_widget, 0, Qt.AlignmentFlag.AlignCenter)
         complete_layout.addWidget(upload_button, 0, Qt.AlignmentFlag.AlignCenter)
+
+        # Initialize arrow layout
         arrow_buttons = QHBoxLayout()
         arrow_buttons.addWidget(previous_move_button,  0, Qt.AlignmentFlag.AlignRight)
         arrow_buttons.addWidget(next_move_button, 0, Qt.AlignmentFlag.AlignLeft)
+
+        # Throw it all together
         complete_layout.addLayout(arrow_buttons)
         self.setLayout(complete_layout)
 
+    # When "Import PGN" is clicked
     def uploadFile(self):
         documents_dir = str(Path.home() / "Documents")
         fname = QFileDialog.getOpenFileName(
@@ -49,6 +62,7 @@ class UILayout(QWidget):
         if fname[0]:
             self.loadFile(fname[0])
 
+    # Attempts to open the PGN file
     def loadFile(self, filepath):
         try:
             file_extension = Path(filepath).suffix.lower()
@@ -64,6 +78,7 @@ class UILayout(QWidget):
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Error loading file: {e}")
     
+    # Checks if a PGN file is valid
     def isValidPGN(self, content):
         if not re.search(r'\[.+\]', content):
             return False
