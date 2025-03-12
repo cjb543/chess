@@ -1,7 +1,4 @@
-from PyQt6.QtWidgets import QWidget
-from PyQt6.QtGui import QPainter, QColor, QPixmap
-from PyQt6.QtCore import Qt
-import re, os, sys
+import re
 
 # Checks if a PGN file is valid
 def is_valid_pgn(content):
@@ -138,7 +135,6 @@ def find_source_square(move_data, position, player, board):
     if len(candidates) == 1:
         return candidates[0]
     elif len(candidates) > 1:
-        print(f"Multiple candidates for move: {candidates}, choosing first")
         return candidates[0]
 
     print(f"No valid source found for {player}{piece} to ({target_row},{target_col})")
@@ -262,7 +258,7 @@ def generate_positions_from_moves(moves, initial_position):
     current_player = 'w'
     positions_history = []
     for i, move in enumerate(moves):
-        print(f"Processing move {i+1}: {move} by {current_player}")
+        # print(f"Processing move {i+1}: {move} by {current_player}")
         try:
             current_position = apply_move_to_position(move, current_position, current_player, None)
             positions_history.append(current_position.copy())

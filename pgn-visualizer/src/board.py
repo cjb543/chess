@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QWidget
 from PyQt6.QtGui import QPainter, QColor, QPixmap
 from PyQt6.QtCore import Qt
-import re, os, sys, processing
+import processing
 
 board_widget = None
 
