@@ -4,16 +4,16 @@ from PyQt6.QtGui import QShortcut, QKeySequence
 from pathlib import Path
 import re
 from board import ChessBoard
-import processing
+from processing import is_valid_pgn
 
-class UILayout(QWidget):
+class initProgram(QWidget):
     def __init__(self):
         super().__init__()
 
         # Initialize Chess Board
         self.board_widget = ChessBoard()
         self.board_widget.setFixedSize(self.board_widget.board_size, self.board_widget.board_size)
-        processing.construct_board(self.board_widget)
+        ChessBoard.construct_board(self.board_widget)
 
         # Initialize Upload Button
         upload_button = QPushButton("Import PGN")
@@ -24,16 +24,16 @@ class UILayout(QWidget):
         # Initialize Next Move Button
         next_move_button = QPushButton("->")
         next_move_button.isCheckable = True
-        next_move_button.clicked.connect(processing.nextMove)
+        next_move_button.clicked.connect(ChessBoard.nextMove_static)
         self.nextMoveShortcut = QShortcut(QKeySequence('Right'), self)
-        self.nextMoveShortcut.activated.connect(processing.nextMove)
+        self.nextMoveShortcut.activated.connect(ChessBoard.nextMove_static)
 
         # Initialize Previous Move Button
         previous_move_button = QPushButton("<-")
         previous_move_button.isCheckable = True
-        previous_move_button.clicked.connect(processing.previousMove)
+        previous_move_button.clicked.connect(ChessBoard.previousMove_static)
         self.prevMoveShortcut = QShortcut(QKeySequence('Left'), self)
-        self.prevMoveShortcut.activated.connect(processing.previousMove)
+        self.prevMoveShortcut.activated.connect(ChessBoard.previousMove_static)
 
         # Initialize board and upload button layout
         complete_layout = QVBoxLayout()
@@ -50,7 +50,7 @@ class UILayout(QWidget):
         complete_layout.addLayout(arrow_buttons)
         self.setLayout(complete_layout)
 
-    # When "Import PGN" is clicked
+    # When "Import PGN" is clicked, open file dialog
     def upload_file(self):
         documents_dir = str(Path.home() / "Documents")
         fname = QFileDialog.getOpenFileName(
@@ -71,18 +71,9 @@ class UILayout(QWidget):
                 return
             with open(filepath, 'r') as file:
                 pgn_content = file.read()
-            if self.isValidPGN(pgn_content):
-                processing.process_pgn(pgn_content)
+            if is_valid_pgn(pgn_content):
+                ChessBoard.process_pgn(pgn_content)
             else:
                 QMessageBox.warning(self, "Invalid PGN", "The file does not contain valid PGN notation")
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Error loading file: {e}")
-    
-    # Checks if a PGN file is valid
-    def isValidPGN(self, content):
-        if not re.search(r'\[.+\]', content):
-            return False
-        if not re.search(r'\d+\.', content):
-            return False
-
-        return True
