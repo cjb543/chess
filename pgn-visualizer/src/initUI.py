@@ -13,13 +13,13 @@ class UILayout(QWidget):
         # Initialize Chess Board
         self.board_widget = ChessBoard()
         self.board_widget.setFixedSize(self.board_widget.board_size, self.board_widget.board_size)
-        processing.set_board(self.board_widget)
+        processing.construct_board(self.board_widget)
 
         # Initialize Upload Button
         upload_button = QPushButton("Import PGN")
         upload_button.setFixedSize(128,40)
         upload_button.isCheckable = True
-        upload_button.clicked.connect(self.uploadFile)
+        upload_button.clicked.connect(self.upload_file)
 
         # Initialize Next Move Button
         next_move_button = QPushButton("->")
@@ -51,7 +51,7 @@ class UILayout(QWidget):
         self.setLayout(complete_layout)
 
     # When "Import PGN" is clicked
-    def uploadFile(self):
+    def upload_file(self):
         documents_dir = str(Path.home() / "Documents")
         fname = QFileDialog.getOpenFileName(
             self, 
@@ -60,10 +60,10 @@ class UILayout(QWidget):
             'Text Files (*.txt);;PGN Files (*.pgn);;All Files (*)'
         )
         if fname[0]:
-            self.loadFile(fname[0])
+            self.load_file(fname[0])
 
-    # Attempts to open the PGN file
-    def loadFile(self, filepath):
+    # Attempts to open the PGN file selected. Checks for file extension and formatting
+    def load_file(self, filepath):
         try:
             file_extension = Path(filepath).suffix.lower()
             if file_extension not in ['.pgn', '.txt']:
@@ -72,7 +72,7 @@ class UILayout(QWidget):
             with open(filepath, 'r') as file:
                 pgn_content = file.read()
             if self.isValidPGN(pgn_content):
-                processing.processPGN(pgn_content)
+                processing.process_pgn(pgn_content)
             else:
                 QMessageBox.warning(self, "Invalid PGN", "The file does not contain valid PGN notation")
         except Exception as e:
