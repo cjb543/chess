@@ -15,7 +15,8 @@ Or for those that go outside, the [executable](https://github.com/cjb543/chess/r
 <br/>
 <br/>
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/9628c879-8281-49c8-a17d-0d7d14a3f9c3"/>
+  <img src="![demo](https://github.com/user-attachments/assets/6a3c6d6a-f212-4cf6-ad94-afab39bfe6fa)
+"/>
 </p>
 <br/>
 <br/>
