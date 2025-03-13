@@ -9,7 +9,7 @@ def is_valid_pgn(content):
     return True
 
 
-# Parse PGN content and apply to the given board
+# Parse PGN content and apply to the given board, update() visually updates the program
 def parse_pgn(pgn_content, board):
     board.setupStartingPosition()
     moves_text = extract_moves_from_pgn(pgn_content)
@@ -19,13 +19,14 @@ def parse_pgn(pgn_content, board):
     board.current_move_index = -1
     board.update()
 
-
+# Suck out the moves from the PGN file (2 newlines separate non-move and move details)
+# Thank you PGN Gods <3
 def extract_moves_from_pgn(pgn_content):
     if '\n\n' in pgn_content:
         return pgn_content.split('\n\n', 1)[1]
     return pgn_content
 
-
+# Return a list of moves from the supplied moves_text parameter
 def extract_moves_list(moves_text):
     moves_text = re.sub(r'\{[^}]*\}', '', moves_text)
     moves_text = re.sub(r'\([^)]*\)', '', moves_text)
@@ -34,7 +35,7 @@ def extract_moves_list(moves_text):
     moves = re.findall(move_pattern, moves_text)
     return [move for move in moves if move.strip()]
 
-
+# Return a new position based on the supplied move, color (W or B), current position, and the board state
 def apply_move_to_position(move, position, player, board):
     new_position = position.copy()
     if move == "O-O":
@@ -68,7 +69,7 @@ def apply_move_to_position(move, position, player, board):
         new_position[target_square] = piece 
     return new_position
 
-
+# Parse the move, process the information seen in the result dictionary
 def parse_move_notation(move, player):
     result = {
         'piece': 'P',
@@ -100,7 +101,7 @@ def parse_move_notation(move, player):
         result['source_rank'] = 8 - int(move[-1])
     return result
 
-
+# Find the original square (usually for first moves where piece is not specified (1. e4 e5 for example))
 def find_source_square(move_data, position, player, board):
     target_row = move_data['target_row']
     target_col = move_data['target_col']
@@ -137,10 +138,10 @@ def find_source_square(move_data, position, player, board):
     elif len(candidates) > 1:
         return candidates[0]
 
-    print(f"No valid source found for {player}{piece} to ({target_row},{target_col})")
+    print(f"find_source_square: No idea where this piece is moving from!")
     return None
 
-
+# Where did a pawn start from? (useful for move 1 where pawn is not specified but inferred (1. e4 e5))
 def _find_pawn_source(move_data, position, player):
     target_row = move_data['target_row']
     target_col = move_data['target_col']
@@ -177,7 +178,7 @@ def _find_pawn_source(move_data, position, player):
 
     return None
 
-
+# Determine if a piece can move to the target square or not (2nd-pass error-checking)
 def _can_piece_move_to_target(piece_type, row, col, target_row, target_col, position, player, is_capture, board):
     # Pawn movement rules
     if piece_type == 'P':
@@ -212,7 +213,7 @@ def _can_piece_move_to_target(piece_type, row, col, target_row, target_col, posi
 
     return False
 
-
+# Determine if a pawn can move to desired square
 def _can_pawn_move_to_target(row, col, target_row, target_col, player, is_capture):
     if not is_capture:
         # Regular move: same column
@@ -226,7 +227,7 @@ def _can_pawn_move_to_target(row, col, target_row, target_col, player, is_captur
         else:
             return row < target_row and abs(col - target_col) == 1
 
-
+# Determine if a diagonal path (for bishops and queens) is clear
 def is_diagonal_path_clear(position, start_row, start_col, end_row, end_col):
     row_step = 1 if end_row > start_row else -1
     col_step = 1 if end_col > start_col else -1
@@ -238,7 +239,7 @@ def is_diagonal_path_clear(position, start_row, start_col, end_row, end_col):
         col += col_step
     return True
 
-
+# Determine if a straight-line path (every piece except knights and bishops) is clear
 def is_straight_path_clear(position, start_row, start_col, end_row, end_col):
     if start_row == end_row:
         col_step = 1 if end_col > start_col else -1
@@ -252,7 +253,7 @@ def is_straight_path_clear(position, start_row, start_col, end_row, end_col):
                 return False
     return True
 
-
+# Update position based on the passed in move (actually move)
 def generate_positions_from_moves(moves, initial_position):
     current_position = initial_position
     current_player = 'w'
@@ -267,3 +268,66 @@ def generate_positions_from_moves(moves, initial_position):
             print(f"Error at move {i+1} ({move}): {e}")
             break
     return positions_history
+
+# Extract non-move information (used for right-side information layout)
+def extract_game_info(pgn_content):
+    game_info = {
+        'white_player': 'N/A',
+        'white_elo':    'N/A',
+        'black_player': 'N/A',
+        'black_elo':    'N/A',
+        'date':         'N/A',
+        'event':        'N/A',
+        'winner':       'N/A'
+    }
+    
+    # Regular expressions to extract information
+    white_player_pattern = r'\[White\s+"([^"]+)"\]'
+    white_elo_pattern = r'\[WhiteElo\s+"([^"]+)"\]'
+    black_player_pattern = r'\[Black\s+"([^"]+)"\]'
+    black_elo_pattern = r'\[BlackElo\s+"([^"]+)"\]'
+    date_pattern = r'\[Date\s+"([^"]+)"\]'
+    event_pattern = r'\[Event\s+"([^"]+)"\]'
+    result_pattern = r'\[Result\s+"([^"]+)"\]'
+    
+    white_player_match = re.search(white_player_pattern, pgn_content)
+    if white_player_match:
+        full_name = white_player_match.group(1)
+        # Extract last name only (broken but close enough and I'm tired)
+        game_info['white_player'] = full_name.split()[-1]
+    
+    white_elo_match = re.search(white_elo_pattern, pgn_content)
+    if white_elo_match:
+        game_info['white_elo'] = white_elo_match.group(1)
+    
+    black_player_match = re.search(black_player_pattern, pgn_content)
+    if black_player_match:
+        full_name = black_player_match.group(1)
+        # Extract last name only (broken but close enough and I'm tired)
+        game_info['black_player'] = full_name.split()[-1]
+    
+    black_elo_match = re.search(black_elo_pattern, pgn_content)
+    if black_elo_match:
+        game_info['black_elo'] = black_elo_match.group(1)
+    
+    date_match = re.search(date_pattern, pgn_content)
+    if date_match:
+        game_info['date'] = date_match.group(1)
+    
+    event_match = re.search(event_pattern, pgn_content)
+    if event_match:
+        game_info['event'] = event_match.group(1)
+    
+    result_match = re.search(result_pattern, pgn_content)
+    if result_match:
+        result = result_match.group(1)
+        if result == "1-0":
+            game_info['winner'] = "White"
+        elif result == "0-1":
+            game_info['winner'] = "Black"
+        elif result == "1/2-1/2":
+            game_info['winner'] = "Draw"
+        else:
+            game_info['winner'] = "Unknown"
+    
+    return game_info

@@ -25,6 +25,7 @@ class MainWindow(QMainWindow):
 # If ran directly, start and show program
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    app.setStyle('Windows') # Dark mode enabling
     window = MainWindow()
     window.show()
     app.exec()

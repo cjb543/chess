@@ -1,6 +1,6 @@
-from PyQt6.QtWidgets import QWidget
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout
 from PyQt6.QtGui import QPainter, QColor, QPixmap
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, pyqtSignal
 import processing
 
 board_widget = None
@@ -8,9 +8,9 @@ board_widget = None
 class ChessBoard(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.square_size = 40
+        self.square_size = 38
         self.board_size = self.square_size * 8
-        self.setMinimumSize(200, 200)
+        self.setMinimumSize(180, 180)
         self.pieces = {}
         self.piece_images = {}
         self.setupStartingPosition()
@@ -18,6 +18,7 @@ class ChessBoard(QWidget):
         self.current_position = {}
         self.positions_history = []
         self.current_move_index = -1
+        self.move_changed = pyqtSignal(int)
     
 
     # Render board
@@ -67,7 +68,8 @@ class ChessBoard(QWidget):
         self.current_move_index = -1
     
 
-    # Load pieces for all cases
+    # Load pieces for all cases (freezing/direct execution)
+    # Essentially making room for my messups as a code monkey
     def loadPieceImages(self):
         import os
         import sys
@@ -107,7 +109,7 @@ class ChessBoard(QWidget):
                 )
             self.piece_images[piece_type] = pixmap
 
-
+    # Getter for current board position
     def getCurrentPosition(self):
         if self.current_move_index == -1:
             return self.pieces
@@ -116,7 +118,7 @@ class ChessBoard(QWidget):
         return self.pieces
 
 
-    # Replace the PGN parsing method with a call to the processing module
+    # Replace the PGN parsing method with a call to the processing module (this surely can be trimmed TODO: investigate)
     def parsePGN(self, pgn_content):
         processing.parse_pgn(pgn_content, self)
         self.update()
@@ -144,28 +146,53 @@ class ChessBoard(QWidget):
         self.current_move_index = -1
         self.update()
     
+    def get_move_count(self):
+        return self.current_move_index+1
 
     # Static next move method that connects to onscreen UI button
     @classmethod
     def nextMove_static(cls):
         global board_widget
         if board_widget:
-            return board_widget.nextMove()
+            result = board_widget.nextMove()
+            cls.update_move_count_label()
+            return result
         return False
     
-
     # Static previous move method that connects to onscreen UI button
     @classmethod
     def previousMove_static(cls):
         global board_widget
         if board_widget:
-            return board_widget.previousMove()
+            result = board_widget.previousMove()
+            cls.update_move_count_label()
+            return result
         return False
+    
+    @classmethod
+    def update_move_count_label(cls):
+        global board_widget
+        from initprogram import main_window  # Avoid circular imports (python!)
+
+        if board_widget and main_window:
+            move_number = board_widget.current_move_index + 1
+
+            # Find the move count label in the right side layout
+            for i in range(main_window.findChild(QHBoxLayout).count()):
+                layout_item = main_window.findChild(QHBoxLayout).itemAt(i)
+                if isinstance(layout_item.layout(), QVBoxLayout) and layout_item.layout() != main_window.findChild(QHBoxLayout).itemAt(0).layout():
+                    right_side_layout = layout_item.layout()
+                    # Move count label = index 3 :D
+                    movecount_label = right_side_layout.itemAt(3).widget()
+                    movecount_label.setText(f"Turn: {move_number}")
+                    break
     
 
     # Static call to process PGN file
     @classmethod
     def process_pgn(cls, pgn_content):
+        from processing import extract_game_info
+        cls.game_info = extract_game_info(pgn_content)
         global board_widget
         if board_widget:
             board_widget.parsePGN(pgn_content)
