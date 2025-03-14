@@ -304,7 +304,7 @@ def extract_game_info(pgn_content):
     if black_player_match:
         full_name = black_player_match.group(1)
         # Extract last name only (broken but close enough and I'm tired)
-        game_info['black_player'] = full_name.split()[-1]
+        game_info['black_player'] = full_name.split()[-1] 
     
     black_elo_match = re.search(black_elo_pattern, pgn_content)
     if black_elo_match:

@@ -35,6 +35,12 @@ class MainWindow(QMainWindow):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     app.setStyle('Windows') # Dark mode enabling
+
+    # Set App Styles
+    with open("./src/styles.qss", 'r') as f:
+        style = f.read()
+        app.setStyleSheet(style)
+        
     window = MainWindow()
     window.show()
     app.exec()

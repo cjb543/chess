@@ -20,7 +20,6 @@ class ChessBoard(QWidget):
         self.current_move_index = -1
         self.move_changed = pyqtSignal(int)
     
-
     # Render board
     def paintEvent(self, event):
         painter = QPainter(self)

@@ -1,0 +1,18 @@
+* {
+    background-color: #333333;
+    color: #F5F5F5;
+}
+
+QPushButton {
+    font-family: "Times";
+    font-size: 12pt;
+    border-radius: 8px;
+    background-color: #454444;
+}
+
+QLabel{
+    font-family: "Times";
+    font-size: 12pt;
+    border-radius: 8px;
+}
+
