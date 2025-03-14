@@ -4,6 +4,15 @@ from PyQt6.QtWidgets import QApplication, QMainWindow
 from PyQt6.QtGui import QIcon
 from initprogram import initProgram
 
+# TODO:
+#   - Better PGN File Error Checking (formatting; extension-checking is perfect)
+#   - Better bounds/error-checking. If a bad file is read, it shouldn't go past x moves etc...
+#   - What other functionality can I add?
+#       - First Move Button (already coded but not implemented), Last Move Button
+#   - Better text styling
+#   - Use of a .qss file (Use the entire framework bro)
+#   - FEN reader sub program? Switch between the two?
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()

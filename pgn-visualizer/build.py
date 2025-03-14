@@ -1,16 +1,20 @@
-''' 
-Build file for PyInstaller. 
-Just for visual purpose.
-Could easily have been done on command line.
-'''
 import PyInstaller.__main__
+import glob
 
-PyInstaller.__main__.run([
+# Get all PNG files in the current directory
+png_files = glob.glob("*.png")
+data_args = []
+for png_file in png_files:
+    data_args.append(f'--add-data={png_file};.')
+
+base_args = [
     './src/main.py',
     '--name=PGN Visualizer',
     '--onefile',
     '--windowed',
-    '--add-data=*.png;.',
-    '--debug=all',
     '--clean',
-])
+    '--icon=favicon.ico'
+]
+# Combine all arguments
+all_args = base_args + data_args
+PyInstaller.__main__.run(all_args)
