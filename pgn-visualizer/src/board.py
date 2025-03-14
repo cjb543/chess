@@ -181,8 +181,8 @@ class ChessBoard(QWidget):
                 layout_item = main_window.findChild(QHBoxLayout).itemAt(i)
                 if isinstance(layout_item.layout(), QVBoxLayout) and layout_item.layout() != main_window.findChild(QHBoxLayout).itemAt(0).layout():
                     right_side_layout = layout_item.layout()
-                    # Move count label = index 3 :D
-                    movecount_label = right_side_layout.itemAt(3).widget()
+                    # Move count label = index 4 :D
+                    movecount_label = right_side_layout.itemAt(4).widget()
                     movecount_label.setText(f"Turn: {move_number}")
                     break
     

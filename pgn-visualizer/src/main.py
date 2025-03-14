@@ -10,7 +10,6 @@ from initprogram import initProgram
 #   - What other functionality can I add?
 #       - First Move Button (already coded but not implemented), Last Move Button
 #   - Better text styling
-#   - Use of a .qss file (Use the entire framework bro)
 #   - FEN reader sub program? Switch between the two?
 
 class MainWindow(QMainWindow):

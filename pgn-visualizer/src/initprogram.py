@@ -37,7 +37,7 @@ class initProgram(QWidget):
 
         # Initialize Previous Move Arrow Key and add to sub-layout
         previous_move_button = QPushButton("<-")
-        previous_move_button.setFixedSize(64,30)
+        previous_move_button.setFixedSize(64,24)
         previous_move_button.isCheckable = True
         self.prevMoveShortcut = QShortcut(QKeySequence('Left'), self)
         self.prevMoveShortcut.activated.connect(ChessBoard.previousMove_static)
@@ -46,7 +46,7 @@ class initProgram(QWidget):
         
         # Initialize Next Move Arrow Key and add to sub-layout
         next_move_button = QPushButton("->")
-        next_move_button.setFixedSize(64,30)
+        next_move_button.setFixedSize(64,24)
         next_move_button.isCheckable = True
         self.nextMoveShortcut = QShortcut(QKeySequence('Right'), self)
         self.nextMoveShortcut.activated.connect(ChessBoard.nextMove_static)
@@ -61,17 +61,17 @@ class initProgram(QWidget):
         rightSideInfo = QVBoxLayout()
 
         # Set label defaults
-        date_label = QLabel("Date: N/A")
-        event_label = QLabel("Event: N/A")
         whitevsblack_label = QLabel("Names: N/A")
         elocounts_label = QLabel("Elos: N/A")
+        date_label = QLabel("Date: N/A")
+        event_label = QLabel("Event: N/A")
         movecount_label = QLabel("Turn: N/A")
         winner_label = QLabel("Winner: N/A")
 
-        # Set fixed sizes for these specific widgets first
         whitevsblack_label.setFixedWidth(180)
         whitevsblack_label.setWordWrap(True)  # Add word wrap for long names
         elocounts_label.setFixedWidth(180)
+        event_label.setWordWrap(True)  # Add word wrap for long names
 
         # Add widgets to the main rightSideInfo layout
         rightSideInfo.addWidget(whitevsblack_label, 0, Qt.AlignmentFlag.AlignCenter)
@@ -145,32 +145,21 @@ class initProgram(QWidget):
             layout_item = self.findChild(QHBoxLayout).itemAt(i)
             if isinstance(layout_item.layout(), QVBoxLayout) and layout_item.layout() != self.findChild(QHBoxLayout).itemAt(0).layout():
                 right_side_layout = layout_item.layout()
-                break
-            
-        # Update player names and Elos
-        grouped_container = right_side_layout.itemAt(0).widget()
-        grouped_layout = grouped_container.layout()
 
-        # Update player vs player label
-        player_label = grouped_layout.itemAt(0).widget()
-        player_label.setText(f"{game_info['white_player']} vs. {game_info['black_player']}")
+                # Update labels directly from the layout
+                whitevsblack_label = right_side_layout.itemAt(0).widget()
+                elocounts_label = right_side_layout.itemAt(1).widget()
+                date_label = right_side_layout.itemAt(2).widget()
+                event_label = right_side_layout.itemAt(3).widget()
+                movecount_label = right_side_layout.itemAt(4).widget()
+                winner_label = right_side_layout.itemAt(5).widget()
 
-        # Update Elo label
-        elo_label = grouped_layout.itemAt(1).widget()
-        elo_label.setText(f"Elo: {game_info['white_elo']} vs. {game_info['black_elo']}")
+                # Update the labels
+                whitevsblack_label.setText(f"{game_info['white_player']} vs. {game_info['black_player']}")
+                elocounts_label.setText(f"Elo: {game_info['white_elo']} vs. {game_info['black_elo']}")
+                date_label.setText(f"Date: {game_info['date']}")
+                event_label.setText(f"Event: {game_info['event']}")
+                movecount_label.setText(f"Turn: 0")
+                winner_label.setText(f"Winner: {game_info['winner']}")
 
-        # Update date label (index 1 after the grouped container)
-        date_label = right_side_layout.itemAt(1).widget()
-        date_label.setText(f"Date: {game_info['date']}")
-
-        # Update event label
-        event_label = right_side_layout.itemAt(2).widget()
-        event_label.setText(f"Event: {game_info['event']}")
-
-        # Skip moves
-        movecount_label = right_side_layout.itemAt(3).widget()
-        movecount_label.setText(f"Turn: 0")
-
-        # Update winner label
-        winner_label = right_side_layout.itemAt(4).widget()
-        winner_label.setText(f"Winner: {game_info['winner']}")  
+                break 
