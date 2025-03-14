@@ -25,19 +25,15 @@ class initProgram(QWidget):
 
         # Initialize Upload Button and add to layout
         upload_button = QPushButton("Import PGN")
-
-        upload_button.setFixedSize(128,30)
         upload_button.isCheckable = True
         upload_button.clicked.connect(self.upload_file)
         boardUploadArrows.addWidget(upload_button, 0, Qt.AlignmentFlag.AlignCenter)
 
         # Connect Navigation Arrows via Sub-Layout
         arrow_buttons = QHBoxLayout()
-        arrow_buttons.setContentsMargins(0,0,0,20)
 
         # Initialize Previous Move Arrow Key and add to sub-layout
         previous_move_button = QPushButton("<-")
-        previous_move_button.setFixedSize(64,24)
         previous_move_button.isCheckable = True
         self.prevMoveShortcut = QShortcut(QKeySequence('Left'), self)
         self.prevMoveShortcut.activated.connect(ChessBoard.previousMove_static)
@@ -46,7 +42,6 @@ class initProgram(QWidget):
         
         # Initialize Next Move Arrow Key and add to sub-layout
         next_move_button = QPushButton("->")
-        next_move_button.setFixedSize(64,24)
         next_move_button.isCheckable = True
         self.nextMoveShortcut = QShortcut(QKeySequence('Right'), self)
         self.nextMoveShortcut.activated.connect(ChessBoard.nextMove_static)
@@ -55,7 +50,6 @@ class initProgram(QWidget):
 
         # Add both arrows to layout
         boardUploadArrows.addLayout(arrow_buttons)
-        boardUploadArrows.setContentsMargins(10,30,10,10)
 
         # Connect all right side bar info
         rightSideInfo = QVBoxLayout()
@@ -68,9 +62,7 @@ class initProgram(QWidget):
         movecount_label = QLabel("Turn: N/A")
         winner_label = QLabel("Winner: N/A")
 
-        whitevsblack_label.setFixedWidth(180)
         whitevsblack_label.setWordWrap(True)  # Add word wrap for long names
-        elocounts_label.setFixedWidth(180)
         event_label.setWordWrap(True)  # Add word wrap for long names
 
         # Add widgets to the main rightSideInfo layout
@@ -80,35 +72,18 @@ class initProgram(QWidget):
         rightSideInfo.addWidget(event_label, 0, Qt.AlignmentFlag.AlignCenter)
         rightSideInfo.addWidget(movecount_label, 0, Qt.AlignmentFlag.AlignCenter)
         rightSideInfo.addWidget(winner_label, 0, Qt.AlignmentFlag.AlignCenter)
-        rightSideInfo.setContentsMargins(0,20,0,20)
-
-        # Set fixed sizes for remaining widgets
-        date_label.setFixedWidth(180)
-        date_label.setFixedHeight(40)
-        event_label.setFixedWidth(180)
-        event_label.setFixedHeight(40)
-        movecount_label.setFixedWidth(180)
-        movecount_label.setFixedHeight(40)
-        winner_label.setFixedWidth(180)
-        winner_label.setFixedHeight(40)
-
-        # Set fixed sizes for all widgets directly in layout3
-        for i in range(rightSideInfo.count()):
-            widget = rightSideInfo.itemAt(i).widget()
-            if widget:
-                widget.setFixedWidth(180)
-                widget.setFixedHeight(40)
+        rightSideInfo.setContentsMargins(20,0,0,30)
 
         # Throw all together
         complete_layout = QHBoxLayout()
         complete_layout.addLayout(boardUploadArrows)
-        complete_layout.addLayout(rightSideInfo)  
+        complete_layout.addLayout(rightSideInfo)
         widget = QWidget()
         widget.setLayout(complete_layout)
 
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(0, 0, 0, 0)
         main_layout.addWidget(widget)
+
 
     # When "Import PGN" is clicked, open file dialog
     def upload_file(self):
@@ -146,7 +121,7 @@ class initProgram(QWidget):
             if isinstance(layout_item.layout(), QVBoxLayout) and layout_item.layout() != self.findChild(QHBoxLayout).itemAt(0).layout():
                 right_side_layout = layout_item.layout()
 
-                # Update labels directly from the layout
+                # Assign labels directly from the layout
                 whitevsblack_label = right_side_layout.itemAt(0).widget()
                 elocounts_label = right_side_layout.itemAt(1).widget()
                 date_label = right_side_layout.itemAt(2).widget()

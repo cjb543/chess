@@ -1,25 +1,30 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout
 from PyQt6.QtGui import QPainter, QColor, QPixmap
-from PyQt6.QtCore import Qt, pyqtSignal
-import processing
+from PyQt6.QtCore import Qt
+import processing, os, sys
 
 board_widget = None
 
 class ChessBoard(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
+
+        self.setMinimumSize(180, 180)
+
         self.square_size = 38
         self.board_size = self.square_size * 8
-        self.setMinimumSize(180, 180)
+        self.current_move_index = -1
+        self.isOpened = False
+        self.positions_history = []
         self.pieces = {}
+        self.original_piece_images = {}
+        self.current_position = {}
         self.piece_images = {}
+
         self.setupStartingPosition()
         self.loadPieceImages()
-        self.current_position = {}
-        self.positions_history = []
-        self.current_move_index = -1
-        self.move_changed = pyqtSignal(int)
     
+
     # Render board
     def paintEvent(self, event):
         painter = QPainter(self)
@@ -70,8 +75,6 @@ class ChessBoard(QWidget):
     # Load pieces for all cases (freezing/direct execution)
     # Essentially making room for my messups as a code monkey
     def loadPieceImages(self):
-        import os
-        import sys
         def get_base_path():
             if getattr(sys, 'frozen', False):
                 return sys._MEIPASS
@@ -92,12 +95,10 @@ class ChessBoard(QWidget):
                 f"{piece_type}.png"
             ]
             pixmap = None
-            loaded_path = None
             for path in possible_paths:
                 temp_pixmap = QPixmap(path)
                 if not temp_pixmap.isNull():
                     pixmap = temp_pixmap
-                    loaded_path = path
                     break
             if pixmap:
                 pixmap = pixmap.scaled(
@@ -107,6 +108,7 @@ class ChessBoard(QWidget):
                     Qt.TransformationMode.SmoothTransformation
                 )
             self.piece_images[piece_type] = pixmap
+
 
     # Getter for current board position
     def getCurrentPosition(self):
@@ -120,6 +122,7 @@ class ChessBoard(QWidget):
     # Replace the PGN parsing method with a call to the processing module (this surely can be trimmed TODO: investigate)
     def parsePGN(self, pgn_content):
         processing.parse_pgn(pgn_content, self)
+        self.isOpened = True
         self.update()
     
 
@@ -140,13 +143,22 @@ class ChessBoard(QWidget):
             return True
         return False
     
+
     # Reset game to first position (not currently used)
     def resetToStart(self):
         self.current_move_index = -1
         self.update()
+
+
+    # Go to last move of loaded game
+    def go_to_end_of_game(self):
+        self.current_move_index = len(self.positions_history)
+        self.update
     
+
     def get_move_count(self):
         return self.current_move_index+1
+
 
     # Static next move method that connects to onscreen UI button
     @classmethod
@@ -181,11 +193,12 @@ class ChessBoard(QWidget):
                 layout_item = main_window.findChild(QHBoxLayout).itemAt(i)
                 if isinstance(layout_item.layout(), QVBoxLayout) and layout_item.layout() != main_window.findChild(QHBoxLayout).itemAt(0).layout():
                     right_side_layout = layout_item.layout()
-                    # Move count label = index 4 :D
                     movecount_label = right_side_layout.itemAt(4).widget()
-                    movecount_label.setText(f"Turn: {move_number}")
+                    # 
+                    if len(board_widget.positions_history) > 0:
+                        movecount_label.setText(f"Turn: {move_number}")
                     break
-    
+     
 
     # Static call to process PGN file
     @classmethod

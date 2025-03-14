@@ -1,4 +1,4 @@
-import sys
+import sys, ctypes
 from PyQt6.QtCore import QSize
 from PyQt6.QtWidgets import QApplication, QMainWindow
 from PyQt6.QtGui import QIcon
@@ -6,11 +6,12 @@ from initprogram import initProgram
 
 # TODO:
 #   - Better PGN File Error Checking (formatting; extension-checking is perfect)
-#   - Better bounds/error-checking. If a bad file is read, it shouldn't go past x moves etc...
+#   - Better bounds-checking. If a bad file is read, it shouldn't go past x moves etc...
 #   - What other functionality can I add?
 #       - First Move Button (already coded but not implemented), Last Move Button
+#       - FEN reader sub program - switch between the two
+#   - Add window size responsiveness
 #   - Better text styling
-#   - FEN reader sub program? Switch between the two?
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -18,11 +19,9 @@ class MainWindow(QMainWindow):
 
         # Set Window Title, Size, and Icon
         self.setWindowTitle("PGN Visualizer")
-        self.setFixedSize(QSize(640,480))
-        self.setWindowIcon(QIcon('../favicon.png'))
+        self.setWindowIcon(QIcon('./favicon.png'))
 
         # Set Window ID (Needed for taskbar icon)
-        import ctypes
         myappid = 'cjb543.pgnvisualizer.pgn.000'
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
