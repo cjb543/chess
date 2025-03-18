@@ -1,9 +1,11 @@
-from PyQt6.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout, QMessageBox, QPushButton, QFileDialog, QTextEdit
-from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QShortcut, QKeySequence, QResizeEvent, QFont
-from pathlib import Path
-from board import ChessBoard
+from PyQt6.QtWidgets import (QWidget, QLabel, QVBoxLayout, QHBoxLayout, 
+                             QMessageBox, QPushButton, QToolBar, QFileDialog,
+                             QTextEdit)
+from PyQt6.QtGui import (QShortcut, QKeySequence, QResizeEvent, QFont)
 from processing import is_valid_pgn
+from PyQt6.QtCore import Qt
+from board import ChessBoard
+from pathlib import Path
 
 main_window = None
 
@@ -24,8 +26,8 @@ class initProgram(QWidget):
         boardUploadArrows.addWidget(self.board_widget, 0, Qt.AlignmentFlag.AlignCenter)
 
         # Initialize Upload Buttons and add to layout
-        fen_input = QTextEdit("Import FEN String")
-
+        fen_input = QTextEdit("Import FEN String...")
+        fen_input.setMaximumHeight(40)
         upload_button = QPushButton("Import PGN")
         upload_button.isCheckable = True
         upload_button.clicked.connect(self.upload_file)
@@ -90,7 +92,6 @@ class initProgram(QWidget):
 
     # Resize gui when window is resized
     def resizeEvent(self, event: QResizeEvent):
-        
         pass
 
 
@@ -147,3 +148,8 @@ class initProgram(QWidget):
                 winner_label.setText(f"Winner: {game_info['winner']}")
 
                 break 
+    
+    @classmethod
+    def upload_file_static(cls):
+        if main_window:
+            cls.upload_file()

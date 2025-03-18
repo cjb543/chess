@@ -1,6 +1,6 @@
 import sys, ctypes
-from PyQt6.QtWidgets import QApplication, QMainWindow
-from PyQt6.QtGui import QIcon
+from PyQt6.QtWidgets import QApplication, QMainWindow, QToolBar
+from PyQt6.QtGui import QIcon, QAction
 from initprogram import initProgram
 
 # TODO:
@@ -27,6 +27,16 @@ class MainWindow(QMainWindow):
         # Start Program
         program = initProgram()
         self.setCentralWidget(program)
+
+        # Create ToolBar and subsequent menus
+        menu_bar = self.menuBar()
+        file_menu = menu_bar.addMenu('&File')
+        open_action = QAction(QIcon('./assets/open.png'), '&Open PGN...', self)
+        open_action.triggered.connect(initProgram.upload_file_static)
+        open_action.setStatusTip('Open a PGN File')
+        open_action.setShortcut('Ctrl+O')
+        file_menu.addAction(open_action)
+
 
 # If ran directly, start and show program
 if __name__ == "__main__":
