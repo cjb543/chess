@@ -1,6 +1,6 @@
-from PyQt6.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout, QMessageBox, QPushButton, QFileDialog
+from PyQt6.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout, QMessageBox, QPushButton, QFileDialog, QTextEdit
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QShortcut, QKeySequence
+from PyQt6.QtGui import QShortcut, QKeySequence, QResizeEvent, QFont
 from pathlib import Path
 from board import ChessBoard
 from processing import is_valid_pgn
@@ -23,10 +23,13 @@ class initProgram(QWidget):
         ChessBoard.construct_board(self.board_widget)
         boardUploadArrows.addWidget(self.board_widget, 0, Qt.AlignmentFlag.AlignCenter)
 
-        # Initialize Upload Button and add to layout
+        # Initialize Upload Buttons and add to layout
+        fen_input = QTextEdit("Import FEN String")
+
         upload_button = QPushButton("Import PGN")
         upload_button.isCheckable = True
         upload_button.clicked.connect(self.upload_file)
+        boardUploadArrows.addWidget(fen_input, 0, Qt.AlignmentFlag.AlignCenter)
         boardUploadArrows.addWidget(upload_button, 0, Qt.AlignmentFlag.AlignCenter)
 
         # Connect Navigation Arrows via Sub-Layout
@@ -56,6 +59,7 @@ class initProgram(QWidget):
 
         # Set label defaults
         whitevsblack_label = QLabel("Names: N/A")
+
         elocounts_label = QLabel("Elos: N/A")
         date_label = QLabel("Date: N/A")
         event_label = QLabel("Event: N/A")
@@ -83,6 +87,11 @@ class initProgram(QWidget):
 
         main_layout = QVBoxLayout(self)
         main_layout.addWidget(widget)
+
+    # Resize gui when window is resized
+    def resizeEvent(self, event: QResizeEvent):
+        
+        pass
 
 
     # When "Import PGN" is clicked, open file dialog

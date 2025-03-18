@@ -1,5 +1,4 @@
 import sys, ctypes
-from PyQt6.QtCore import QSize
 from PyQt6.QtWidgets import QApplication, QMainWindow
 from PyQt6.QtGui import QIcon
 from initprogram import initProgram
@@ -10,7 +9,7 @@ from initprogram import initProgram
 #   - What other functionality can I add?
 #       - First Move Button (already coded but not implemented), Last Move Button
 #       - FEN reader sub program - switch between the two
-#   - Add window size responsiveness
+#   - Add window size responsiveness (buttons and board increase in size)
 #   - Better text styling
 
 class MainWindow(QMainWindow):
@@ -18,7 +17,7 @@ class MainWindow(QMainWindow):
         super().__init__()
 
         # Set Window Title, Size, and Icon
-        self.setWindowTitle("PGN Visualizer")
+        self.setWindowTitle("Chess Visualizer")
         self.setWindowIcon(QIcon('./favicon.png'))
 
         # Set Window ID (Needed for taskbar icon)
