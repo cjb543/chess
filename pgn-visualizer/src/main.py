@@ -6,9 +6,6 @@ from initprogram import initProgram
 # TODO:
 #   - Better PGN File Error Checking (formatting; extension-checking is perfect)
 #   - Better bounds-checking. If a bad file is read, it shouldn't go past x moves etc...
-#   - What other functionality can I add?
-#       - First Move Button (already coded but not implemented), Last Move Button
-#       - FEN reader sub program - switch between the two
 #   - Add window size responsiveness (buttons and board increase in size)
 #   - Better text styling
 
@@ -31,6 +28,7 @@ class MainWindow(QMainWindow):
         # Create ToolBar and subsequent menus
         menu_bar = self.menuBar()
         file_menu = menu_bar.addMenu('&File')
+        settings_menu = menu_bar.addMenu('&Settings')
         open_action = QAction(QIcon('./assets/open.png'), '&Open PGN...', self)
         open_action.triggered.connect(initProgram.upload_file_static)
         open_action.setStatusTip('Open a PGN File')
