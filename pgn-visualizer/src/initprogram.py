@@ -53,6 +53,19 @@ class initProgram(QWidget):
         next_move_button.clicked.connect(ChessBoard.nextMove_static)
         arrow_buttons.addWidget(next_move_button, 0, Qt.AlignmentFlag.AlignLeft)
 
+        # Initialize Last Move Arrow Key and add to sub-layout
+        last_move_button = QPushButton(">>")
+        last_move_button.isCheckable = True
+        last_move_button.clicked.connect(ChessBoard.last_move_static)
+        arrow_buttons.addWidget(last_move_button,0,Qt.AlignmentFlag.AlignLeft)
+
+        # Initialize First Move Arrow Key and add to sub-layout
+        first_move_button = QPushButton("<<")
+        first_move_button.isCheckable = True
+        first_move_button.clicked.connect(ChessBoard.first_move_static)
+        arrow_buttons.addWidget(first_move_button,0,Qt.AlignmentFlag.AlignRight)
+
+
         # Add both arrows to layout
         boardUploadArrows.addLayout(arrow_buttons)
 
@@ -61,7 +74,6 @@ class initProgram(QWidget):
 
         # Set label defaults
         whitevsblack_label = QLabel("Names: N/A")
-
         elocounts_label = QLabel("Elos: N/A")
         date_label = QLabel("Date: N/A")
         event_label = QLabel("Event: N/A")

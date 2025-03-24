@@ -143,6 +143,16 @@ class ChessBoard(QWidget):
             return True
         return False
     
+    def last_move(self):
+        self.current_move_index  = len(self.positions_history)-1
+        self.update()
+        return True
+    
+    def first_move(self):
+        self.current_move_index = -1
+        self.update()
+        return True
+    
 
     # Reset game to first position (not currently used)
     def resetToStart(self):
@@ -169,7 +179,8 @@ class ChessBoard(QWidget):
             cls.update_move_count_label()
             return result
         return False
-    
+
+
     # Static previous move method that connects to onscreen UI button
     @classmethod
     def previousMove_static(cls):
@@ -180,6 +191,7 @@ class ChessBoard(QWidget):
             return result
         return False
     
+
     @classmethod
     def update_move_count_label(cls):
         global board_widget
@@ -209,3 +221,21 @@ class ChessBoard(QWidget):
         if board_widget:
             board_widget.parsePGN(pgn_content)
             board_widget.resetToStart()
+
+    @classmethod
+    def last_move_static(cls):
+        global board_widget
+        if board_widget:
+            result = board_widget.last_move()
+            cls.update_move_count_label()
+            return result
+        return False
+        
+    @classmethod
+    def first_move_static(cls):
+        global board_widget
+        if board_widget:
+            result = board_widget.first_move()
+            cls.update_move_count_label()
+            return result
+        return False
