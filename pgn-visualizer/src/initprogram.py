@@ -140,3 +140,14 @@ class initProgram(QWidget):
     def help_user(cls):
         # Prompt the user to a help page? Open a webpage?
         pass
+
+    @classmethod
+    def change_window_mode(cls):
+        # Switch the input to a lineEdit for FEN rather than an upload for PGN
+        # Or vice versa :D
+        pass
+
+    @classmethod
+    def import_FEN_string(cls):
+        # Call a FEN String to be processed if imported
+        pass

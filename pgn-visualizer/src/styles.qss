@@ -21,7 +21,7 @@ QMenuBar{
     color: #F5F5F5;
     spacing: 24px;
     font-size: 14pt;
-    padding: 4px;
+    padding-right: 8px;
 }
 
 QMenuBar::item {
