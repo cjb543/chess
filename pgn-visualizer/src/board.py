@@ -9,10 +9,12 @@ class ChessBoard(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
 
+        # Initialize board dimensions and bounds
         self.setMinimumSize(180, 180)
-
         self.square_size = 38
         self.board_size = self.square_size * 8
+
+        # Initialize game trackers (move count, all positions, piece images...)
         self.current_move_index = -1
         self.isOpened = False
         self.positions_history = []
@@ -143,11 +145,14 @@ class ChessBoard(QWidget):
             return True
         return False
     
+    # Move board state to the last move of imported game
     def last_move(self):
         self.current_move_index  = len(self.positions_history)-1
         self.update()
         return True
     
+
+    # Move board state to the first move of imported game
     def first_move(self):
         self.current_move_index = -1
         self.update()
@@ -166,6 +171,7 @@ class ChessBoard(QWidget):
         self.update
     
 
+    # Getter for current # of moves
     def get_move_count(self):
         return self.current_move_index+1
 
@@ -222,6 +228,7 @@ class ChessBoard(QWidget):
             board_widget.parsePGN(pgn_content)
             board_widget.resetToStart()
 
+
     @classmethod
     def last_move_static(cls):
         global board_widget
@@ -231,6 +238,7 @@ class ChessBoard(QWidget):
             return result
         return False
         
+
     @classmethod
     def first_move_static(cls):
         global board_widget

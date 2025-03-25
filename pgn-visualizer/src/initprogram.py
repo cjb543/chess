@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import (QWidget, QLabel, QVBoxLayout, QHBoxLayout, 
                              QMessageBox, QPushButton, QToolBar, QFileDialog,
-                             QTextEdit)
+                             QTextEdit, QLineEdit)
 from PyQt6.QtGui import (QShortcut, QKeySequence, QResizeEvent, QFont)
 from processing import is_valid_pgn
 from PyQt6.QtCore import Qt
@@ -16,93 +16,54 @@ class initProgram(QWidget):
         global main_window
         main_window = self
 
-        # Connect Board, Import PGN, and Navigation Arrows
-        boardUploadArrows = QVBoxLayout()
-
-        # Initialize Chess Board and add to layout
+        # Initialize Chess Board
         self.board_widget = ChessBoard()
         self.board_widget.setFixedSize(self.board_widget.board_size, self.board_widget.board_size)
         ChessBoard.construct_board(self.board_widget)
-        boardUploadArrows.addWidget(self.board_widget, 0, Qt.AlignmentFlag.AlignCenter)
 
-        # Initialize Upload Buttons and add to layout
-        fen_input = QTextEdit("Import FEN String...")
+        # Initialize Upload Buttons
+        fen_input = QLineEdit("Import FEN String...")
         fen_input.setMaximumHeight(40)
         upload_button = QPushButton("Import PGN")
         upload_button.isCheckable = True
         upload_button.clicked.connect(self.upload_file)
-        boardUploadArrows.addWidget(fen_input, 0, Qt.AlignmentFlag.AlignCenter)
-        boardUploadArrows.addWidget(upload_button, 0, Qt.AlignmentFlag.AlignCenter)
 
-        # Connect Navigation Arrows via Sub-Layout
-        arrow_buttons = QHBoxLayout()
-
-        # Initialize Previous Move Arrow Key and add to sub-layout
+        # Initialize Previous Move Arrow Key
         previous_move_button = QPushButton("<-")
         previous_move_button.isCheckable = True
         self.prevMoveShortcut = QShortcut(QKeySequence('Left'), self)
         self.prevMoveShortcut.activated.connect(ChessBoard.previousMove_static)
         previous_move_button.clicked.connect(ChessBoard.previousMove_static)
-        arrow_buttons.addWidget(previous_move_button,  0, Qt.AlignmentFlag.AlignRight)
         
-        # Initialize Next Move Arrow Key and add to sub-layout
+        # Initialize Next Move Arrow Key
         next_move_button = QPushButton("->")
         next_move_button.isCheckable = True
         self.nextMoveShortcut = QShortcut(QKeySequence('Right'), self)
         self.nextMoveShortcut.activated.connect(ChessBoard.nextMove_static)
         next_move_button.clicked.connect(ChessBoard.nextMove_static)
-        arrow_buttons.addWidget(next_move_button, 0, Qt.AlignmentFlag.AlignLeft)
 
-        # Initialize Last Move Arrow Key and add to sub-layout
+        # Initialize Last Move Arrow Key
         last_move_button = QPushButton(">>")
         last_move_button.isCheckable = True
         last_move_button.clicked.connect(ChessBoard.last_move_static)
-        arrow_buttons.addWidget(last_move_button,0,Qt.AlignmentFlag.AlignLeft)
 
-        # Initialize First Move Arrow Key and add to sub-layout
+        # Initialize First Move Arrow Key
         first_move_button = QPushButton("<<")
         first_move_button.isCheckable = True
         first_move_button.clicked.connect(ChessBoard.first_move_static)
-        arrow_buttons.addWidget(first_move_button,0,Qt.AlignmentFlag.AlignRight)
 
-
-        # Add both arrows to layout
-        boardUploadArrows.addLayout(arrow_buttons)
-
-        # Connect all right side bar info
-        rightSideInfo = QVBoxLayout()
-
-        # Set label defaults
+        # Define non-move information
         whitevsblack_label = QLabel("Names: N/A")
         elocounts_label = QLabel("Elos: N/A")
         date_label = QLabel("Date: N/A")
         event_label = QLabel("Event: N/A")
         movecount_label = QLabel("Turn: N/A")
         winner_label = QLabel("Winner: N/A")
+        whitevsblack_label.setWordWrap(True)
+        event_label.setWordWrap(True)
 
-        whitevsblack_label.setWordWrap(True)  # Add word wrap for long names
-        event_label.setWordWrap(True)  # Add word wrap for long names
 
-        # Add widgets to the main rightSideInfo layout
-        rightSideInfo.addWidget(whitevsblack_label, 0, Qt.AlignmentFlag.AlignCenter)
-        rightSideInfo.addWidget(elocounts_label, 0, Qt.AlignmentFlag.AlignCenter)
-        rightSideInfo.addWidget(date_label, 0, Qt.AlignmentFlag.AlignCenter)
-        rightSideInfo.addWidget(event_label, 0, Qt.AlignmentFlag.AlignCenter)
-        rightSideInfo.addWidget(movecount_label, 0, Qt.AlignmentFlag.AlignCenter)
-        rightSideInfo.addWidget(winner_label, 0, Qt.AlignmentFlag.AlignCenter)
-        rightSideInfo.setContentsMargins(20,0,0,30)
-
-        # Throw all together
-        complete_layout = QHBoxLayout()
-        complete_layout.addLayout(boardUploadArrows)
-        complete_layout.addLayout(rightSideInfo)
-        widget = QWidget()
-        widget.setLayout(complete_layout)
-
-        main_layout = QVBoxLayout(self)
-        main_layout.addWidget(widget)
-
-    # Resize gui when window is resized
+    # Resize gui when window is resized TODO ?
     def resizeEvent(self, event: QResizeEvent):
         pass
 
@@ -118,6 +79,7 @@ class initProgram(QWidget):
         )
         if fname[0]:
             self.load_file(fname[0])
+
 
     # Attempts to open the PGN file selected. Checks for file extension and formatting
     def load_file(self, filepath):
@@ -135,6 +97,7 @@ class initProgram(QWidget):
                 QMessageBox.warning(self, "Invalid PGN", "The file does not contain valid PGN notation")
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Error loading file: {e}")
+
 
     def update_labels(self, game_info):
         # Find the labels in the layout
@@ -160,8 +123,20 @@ class initProgram(QWidget):
                 winner_label.setText(f"Winner: {game_info['winner']}")
 
                 break 
-    
+
+    # Static function to call "upload_file" from the "File" menu item
     @classmethod
     def upload_file_static(cls):
         if main_window:
             cls.upload_file()
+
+    # Static function to change the window to light/dark mode
+    @classmethod
+    def change_window_theme(cls):
+        # Invert all colors of program.
+        pass
+
+    @classmethod
+    def help_user(cls):
+        # Prompt the user to a help page? Open a webpage?
+        pass
